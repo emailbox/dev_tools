@@ -1,0 +1,145 @@
+
+html, *,
+textarea:focus, input:focus,
+a, a:hover, a:active, a:focus {
+  -webkit-tap-highlight: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); 
+  outline: 0;
+}
+input::-moz-focus-inner { 
+  border: 0; 
+}
+
+body {
+  /*width: 1425px;*/
+  padding: 0px;
+  background: url(../img/whitey.png) repeat;
+}
+
+body.console {
+  background: white;
+}
+
+.body_container {
+  padding: 0px;
+  width: 100% !important;
+  margin-top: 40px;
+}
+
+.body_container.nudge_down {
+  margin-top: 50px;
+}
+
+.container {
+  padding: 0px;
+  width: 100% !important;
+}
+
+/* container */
+.container-fluid {
+  padding: 0px;
+}
+
+/* Main Window(s) */
+.window-holder .main-window {
+  margin-left: 0px;
+}
+
+
+/* Start of 2 Column CSS */
+.eq_col_outer {
+  clear:left;
+  float:left;
+  width:100%;
+  overflow:hidden;
+  background: black;
+}
+.eq_col_inner {
+  float:left;
+  width:100%;
+  position:relative;
+  right:50%;
+  background: blue;
+}
+.eq_col_inner > div:first-child {
+  float:left;
+  width:46%;
+  position:relative;
+  left:52%;
+  overflow:hidden;
+}
+.eq_col_inner > div:last-child {
+  float:left;
+  width:46%;
+  position:relative;
+  left:56%;
+  overflow:hidden;
+}
+
+
+
+
+    #editor_js {
+      position: relative;
+      width: 95%;
+      height: 400px;
+
+    }
+
+    #editor_json {
+      position: relative;
+      width: 95%;
+      height: 200px;
+
+    }
+
+    #editor_result {
+      position: relative;
+      width: 95%;
+      height: 200px;
+
+    }
+
+    #json_result ul {
+      list-style-type: none;
+    }
+
+    #json_result li {
+      list-style-type: none;
+    }
+
+    #json_result ul li {
+      color: #077;
+    }
+
+    #json_result .toggle {
+      cursor: pointer;
+    }
+
+    #json_result .key {
+      color: #C00;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #json_result .colon {
+      color: #C00;
+      padding-left: 5px;
+    }
+
+    #json_result .brace {
+      color: #0A0;
+      font-weight: bold;
+    }
+
+    #json_result .brace:not(:last-child) {
+      padding-left: 5px;
+    }
+
+    #json_result .null {
+      color: #9370DB;
+    }
+
+
+
+
