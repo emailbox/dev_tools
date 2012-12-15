@@ -7,5 +7,5 @@ var tmp_credentials = {
 	fullcontact_api_key: "",
 	filepicker_api_key: "ANmCrulqRQcympGJ9kxmEz",
 
-	s3_bucket: "https://s3-us-west-1.amazonaws.com/emailbox1/"
+	s3_bucket: "https://s3.amazonaws.com/emailboxv1/"
 };
