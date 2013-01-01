@@ -427,6 +427,12 @@ Handlebars.registerHelper("display_last_message", function(Thread) {
 });
 
 
+Handlebars.registerHelper("display_iso8601", function(varDate) {
+	var d = new Date(varDate);
+	// window.console.log(d);
+	return d.toISOString();
+});
+
 Handlebars.registerHelper("display_shorttime", function(varDate) {
 	//  Either today's date-time, or Yesterday, or Date
 

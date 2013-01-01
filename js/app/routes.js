@@ -2,10 +2,13 @@
 App.Router = Backbone.Router.extend({
 
 	routes: {
-		
+			
 		'body' : 'body',         // entry point: no hash fragment or #
 
 		'body_login' : 'body_login',
+
+		'events' : 'events',
+		'console' : 'console',
 
 		'logout' : 'logout'
 		
@@ -66,6 +69,35 @@ App.Router = Backbone.Router.extend({
 	intro: function(){
 		var page = new App.Views.Modal.Intro();
 		page.render();
+	},
+
+	events: function(){
+		// called either at startup, or during running
+		// - create the body, or just modify it
+		if($('#switch_view').length < 1){
+			// Create body
+			Backbone.history.loadUrl('body')
+		}
+
+		// Modify body
+		$('#switch_view').html('Go to <strong>Console</strong>');
+		$('#switch_view').addClass('events');
+		$('#console_body').addClass('nodisplay');
+		$('#events_body').removeClass('nodisplay');
+		
+	},
+
+	console: function(){
+
+		if($('#switch_view').length < 1){
+			// Create body
+			Backbone.history.loadUrl('body')
+		}
+
+		$('#switch_view').html('Go to <strong>Events</strong>');
+		$('#switch_view').removeClass('events');
+		$('#console_body').removeClass('nodisplay');
+		$('#events_body').addClass('nodisplay');
 	},
 
 

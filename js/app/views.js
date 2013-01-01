@@ -22,8 +22,12 @@ App.Views.Body = Backbone.View.extend({
 	el: 'body',
 
 	events: {
-
+		'click #switch_view' : 'switch_view',
+		'click span.data_id' : 'show_log',
+		'keyup input#limit' : 'limit'
 	},
+
+	db: {}, // database of events
 
 	initialize: function() {
 		_.bindAll(this, 'render');
@@ -31,9 +35,62 @@ App.Views.Body = Backbone.View.extend({
 	},
 
 
+	switch_view: function(ev){
+		// Toggle between console and event logs
+
+		var elem = ev.currentTarget;
+
+		if($(elem).hasClass('events')){
+			App.router.navigate("console", true);
+		} else {
+			App.router.navigate("events", true);
+			// $(elem).addClass('events');
+			// $('#console_body').addClass('nodisplay');
+			// $('#events_body').removeClass('nodisplay');
+		}
+
+		return false;
+
+	},
+
+
+	show_log: function(ev){
+		// Show event log result
+
+		var elem = ev.currentTarget;
+
+		var stringd = this.db[$(elem).attr('data-id')];
+		//var stringd = localStorage.getItem('test1_'+$(this).attr('data-id'));
+
+		var json = JSON.parse(stringd);
+		var meta = JSON.parse(stringd);
+
+		// delete meta.data; // display content below the meta info
+
+		// highlight correct row
+		$('span.data_id').removeClass('chosen');
+		$(elem).addClass('chosen');
+
+		// Add to page
+		// console.log(json);
+		$('#latest pre#meta').html(JSON.stringify(meta, undefined, 4));
+		// $('#latest pre#data').html(JSON.stringify(json.data, undefined, 4));
+
+		/*
+		if(typeof(json) != 'undefined'){
+			$('#latest pre').html(json);
+		}
+		*/
+
+		return false;
+
+	},
+
+
 	render: function() {
 
 		var self = this;
+		var that = this;
 
 		// Template
 		var template = App.Utils.template('t_body');
@@ -405,8 +462,86 @@ App.Views.Body = Backbone.View.extend({
 		editor_json.resize();
 		editor_result.resize();
 
+		// Set listener for new events
+		console.log(Api.Event.on({
+			event: '*'
+		},
+		function(d){
+			// Update panels
+
+			// Update the created
+			var t = new Date();
+			d.created = t.getTime();
+
+			var j = JSON.stringify(d);
+
+			that.db[d.id] = j;
+
+			// Add to list
+			var template = App.Utils.template('t_item');
+
+			// Render the new list
+			that.render_list();
+
+		}));
 
 		return this;
+	}, 
+
+
+	limit: function(ev){
+		var elem = ev.currentTarget;
+		var that = this;
+
+		// Get previous version
+		that.filter = that.filter || null;
+
+		if($(elem).val() != that.filter){
+			that.filter = $(elem).val();
+			that.render_list(that.filter);
+			console.log('rendered');
+		}
+
+	},
+
+	render_list: function(filter){
+		var that = this;
+
+		filter = filter || null;
+
+		$('#list .empty').remove();
+
+		$('#list').html("");
+
+		var template = App.Utils.template('t_item');
+
+		$.each(that.db,function(i,d){
+			var ev = JSON.parse(d);
+			if(filter){
+				// See if filter is in any of the fields we test against
+				var fields = ['event','id'];
+				var found = false;
+				$.each(fields,function(k,field){
+					if(ev[field].indexOf(filter) != -1){
+						found = true;
+						console.log(ev[field]);
+					}
+				});
+				if(typeof ev.data.response_to == 'string' && ev.data.response_to.indexOf(filter) != -1){
+					found = true;
+				}
+				if(!found){
+					return;
+				}
+			}
+			$('#list').prepend(template(ev));
+		});
+
+		// console.log('d');
+		// console.log(d);
+
+		$('.timeago').timeago();
+
 	}
 });
 
@@ -416,8 +551,7 @@ App.Views.BodyLogin = Backbone.View.extend({
 	el: 'body',
 
 	events: {
-		'click button' : 'login', // composing new email,
-
+		'click button' : 'login' // composing new email,
 	},
 
 	initialize: function() {

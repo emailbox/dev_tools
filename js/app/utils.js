@@ -872,6 +872,7 @@ var Api = {
 
 			console.log('Starting to listen...');
 			var socket = io.connect(App.Credentials.base_api_url + '/'); // SSL
+			socket.emit('room', App.Credentials.user_token); // immediately change room to my unique app user_token
 			socket.on('event', function (new_event) {
 
 				// See if Event.name exists
@@ -894,17 +895,23 @@ var Api = {
 					}
 
 					$.each(listener.data.event, function(i,lEvent){
-						if(lEvent != new_event.event){
-							//console.log('Listener plugin not match Event (utils.js)');
-							return;
-						}
 
-						// Events match, check the id (if necessary
-						if(listener.data.id != new_event.id){
-							// Don't match
-							// - null would have also matched
-							//console.log('Listerner plugin did not match ID (utils.js)');
-							return;
+						// Wildcard, match all
+						if(lEvent != '*'){
+							// Not a wildcard
+							if(lEvent != new_event.event){
+								//console.log('Listener plugin not match Event (utils.js)');
+								return;
+							}
+
+							// Events match, check the id (if necessary
+							if(listener.data.id != new_event.id){
+								// Don't match
+								// - null would have also matched
+								//console.log('Listerner plugin did not match ID (utils.js)');
+								return;
+							}
+							// console.log(listener.data.id);
 						}
 
 						// Looks good, fire the callback

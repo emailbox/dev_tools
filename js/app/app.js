@@ -24,8 +24,9 @@ var App = {
 		// init Router
 		// - not sure if this actually launches the "" position...
 		App.router = new App.Router();
-		Backbone.history.start({silent: true}); // Launches "" router
-		App.router.navigate('',true);
+		// Backbone.history.start({silent: true}); // Launches "" router
+		Backbone.history.start();
+		// App.router.navigate('',true);
 
 		var user_token = localStorage.getItem(App.Credentials.prefix_user_token + 'user_token');
 		App.Credentials.user_token = user_token;
@@ -55,8 +56,13 @@ var App = {
 					return;
 				}
 
-				Backbone.history.loadUrl('body');
-				//App.router.navigate('body',{trigger: true, replace: false});
+				Api.Event.start_listening();
+
+				// Router activated?
+				if(Backbone.history.fragment.length < 1){
+					Backbone.history.loadUrl('body');
+				}
+				// App.router.navigate('body',{trigger: false, replace: false});
 
 			}
 		});
