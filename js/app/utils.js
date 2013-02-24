@@ -209,6 +209,21 @@ App.Utils = {
 		return vars;
 	},
 
+
+	getOAuthParamsInUrl: function(){
+		
+		var oauthParams = {},
+			queryString = location.hash.substring(1),
+			regex = /([^&=]+)=([^&]*)/g,
+			m;
+
+		while (m = regex.exec(queryString)){
+			oauthParams[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+		}
+
+		return oauthParams;
+	},
+
 	nl2br: function(str, is_xhtml) {
 		// http://kevin.vanzonneveld.net
 		// - nl2br() => php.js
@@ -516,128 +531,6 @@ var Api = {
 			contentType: "application/json; charset=utf-8",
 	},
 
-	loadApps: function(){
-		// Already have credentials and whatnot
-		// - determine if we should load local values or not
-		
-		var dfd = $.Deferred();
-		
-		Api.query('/api/apps',{
-			data: {},
-			success: function(response){
-
-				try {
-					var json = $.parseJSON(response);
-				} catch (err){
-					alert("Failed parsing JSON");
-					return;
-				}
-
-				// Check the validity
-				if(json.code != 200){
-					// Expecting a 200 code returned
-					console.log('200 not returned');
-					return;
-				}
-
-				var apps = json.data;
-
-				$.each(apps,function(i,app){
-
-					// Load app scripts
-					// - load from dev, if specified in localStorage
-
-					var tmp = localStorage.getItem('app_' + app.id + '_dev');
-					if(tmp == 1){
-						// Load locally, get a new manifest.json
-
-						console.log('DEV');
-						console.log(app);
-
-						// Load manifest
-						$.ajax({
-							url: './apps/' + app.id + '/manifest.json',
-							cache: false,
-							error: function(err){
-								// Unable to find manifest.json
-								console.log('Unable to find manifest.json locally');
-								console.log(err);
-							},
-							success: function(rManifest){
-
-								// Parse manifest
-
-								// Inject assets
-								console.log('Manifest');
-								console.log(rManifest);
-								console.log(rManifest.id);
-
-								// CSS
-								$.each(rManifest.scripts.css,function(i,script){
-									$("head").append("<link>");
-									var css = $("head").children(":last");
-									css.attr({
-										rel:  "stylesheet",
-										type: "text/css",
-										href: "./apps/" + rManifest.id + '/css/' + script
-									});
-								});
-
-								// JS
-								$.each(rManifest.scripts.js,function(i,script){
-									var script_url = "./apps/" + rManifest.id + '/js/' + script;
-									$.getScript(script_url, function(){
-										// finished loading script (or failed)
-									});
-								});
-
-							}
-						});
-
-					} else {
-
-						console.log('PROD');
-						console.log(app);
-
-						if(app.scripts && app.scripts.length > 0){
-
-							// CSS
-							$.each(app.scripts.css,function(i,script){
-								$("head").append("<link>");
-								var css = $("head").children(":last");
-								css.attr({
-									rel:  "stylesheet",
-									type: "text/css",
-									href: App.Credentials.s3_bucket + App.Credentials.user_token + "/apps/" + app.id + '/css/' + script
-								});
-							});
-
-							// JS
-							$.each(app.scripts.js,function(i,script){
-								var script_url = App.Credentials.s3_bucket + App.Credentials.user_token + "/apps/" + app.id + '/js/' + script;
-								$.getScript(script_url, function(){
-									// finished loading script (or failed)
-								});
-							});
-						}
-
-					}
-
-				});
-
-				// Resolve after loaded scripts
-				dfd.resolve({
-					success: apps
-				});
-
-			}
-		});
-
-		// Return search function
-		return dfd.promise();
-
-	},
-
 	search: function(queryOptions, cacheOptions){
 
 		// Caching is only half-written. Got out of control thinking about how to do it correctly
@@ -776,7 +669,9 @@ var Api = {
 
 		var queryDefaults = {
 			data: {},
-			headers: {"Content-Type" : "application/json"},
+			headers: {
+				"Content-Type" : "application/json"
+			},
 			success: function(response){
 				console.log('Search request succeeded');
 				console.log(response);
@@ -794,7 +689,7 @@ var Api = {
 		queryOptions.data = {
 							auth: {
 									app: App.Credentials.app_key,
-									user_token: App.Credentials.user_token
+									access_token: App.Credentials.access_token
 								},
 							data: data
 							};
@@ -872,7 +767,14 @@ var Api = {
 
 			console.log('Starting to listen...');
 			var socket = io.connect(App.Credentials.base_api_url + '/'); // SSL
-			socket.emit('room', App.Credentials.user_token); // immediately change room to my unique app user_token
+			var room_login = {
+				app: App.Credentials.app_key,
+				access_token: App.Credentials.access_token,
+				user: App.Credentials.user
+			};
+			// console.log('rl');
+			// console.log(room_login);
+			socket.emit('room', JSON.stringify(room_login)); // log into room
 			socket.on('event', function (new_event) {
 
 				// See if Event.name exists

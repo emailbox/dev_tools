@@ -292,7 +292,7 @@ App.Views.Body = Backbone.View.extend({
 				var data = {
 					auth: {
 							app: App.Credentials.app_key,
-							user_token: App.Credentials.user_token
+							access_token: App.Credentials.access_token
 						},
 					data: data_json
 				};
@@ -561,6 +561,21 @@ App.Views.BodyLogin = Backbone.View.extend({
 
 	login: function(ev){
 		// Start OAuth process
+
+		var p = {
+			response_type: 'token',
+			client_id : App.Credentials.app_key,
+			redirect_uri : [location.protocol, '//', location.host, location.pathname].join('')
+			// state // optional
+			// x_user_id // optional	
+		};
+		var params = $.param(p);
+
+		window.location = App.Credentials.base_api_url + "/apps/authorize/?" + params;
+
+		return;
+
+		// Old login code
 
 		var p = {
 			app_id : App.Credentials.app_key,

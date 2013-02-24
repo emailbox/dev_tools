@@ -43,12 +43,16 @@ App.Router = Backbone.Router.extend({
 		
 		if(typeof App.Credentials.user_token != 'string' || App.Credentials.user_token.length < 1){
 			
-			var qs = App.Utils.getUrlVars();
+			// var qs = App.Utils.getUrlVars();
+			var oauthParams = App.Utils.getOAuthParamsInUrl();
 
-			if(typeof qs.user_token == "string"){
-				// Have a user_token
+			// if(typeof qs.user_token == "string"){
+			if(typeof oauthParams.access_token == "string"){
+
+				// Have an access_token
 				// - save it to localStorage
-				localStorage.setItem(App.Credentials.prefix_user_token + 'user_token',qs.user_token);
+				localStorage.setItem(App.Credentials.prefix_access_token + 'user',oauthParams.user_identifier);
+				localStorage.setItem(App.Credentials.prefix_access_token + 'access_token',oauthParams.access_token);
 				
 				// Reload page, back to #home
 				window.location = [location.protocol, '//', location.host, location.pathname].join('');
@@ -107,7 +111,7 @@ App.Router = Backbone.Router.extend({
 		// alert('Logging out');
 
 		// Reset user_token
-		localStorage.setItem(App.Credentials.prefix_user_token + 'user_token','');
+		localStorage.setItem(App.Credentials.prefix_access_token + 'access_token',null);
 		
 		window.location = [location.protocol, '//', location.host, location.pathname].join('');
 

@@ -28,10 +28,12 @@ var App = {
 		Backbone.history.start();
 		// App.router.navigate('',true);
 
-		var user_token = localStorage.getItem(App.Credentials.prefix_user_token + 'user_token');
-		App.Credentials.user_token = user_token;
+		var access_token = localStorage.getItem(App.Credentials.prefix_access_token + 'access_token');
+		var user = localStorage.getItem(App.Credentials.prefix_access_token + 'user');
+		App.Credentials.access_token = access_token;
+		App.Credentials.user = user;
 
-		if(typeof App.Credentials.user_token != 'string' || App.Credentials.user_token.length < 1){
+		if(typeof App.Credentials.access_token != 'string' || App.Credentials.access_token.length < 1){
 			// App.router.navigate("body_login", true);
 			Backbone.history.loadUrl('body_login')
 			return;
@@ -49,8 +51,9 @@ var App = {
 			success: function(res){
 				var res = JSON.parse(res);
 				if(res.code != 200){
-					localStorage.setItem(App.Credentials.prefix_user_token + 'user_token',null);
-					App.Credentials.user_token = null;
+					console.log('Failed Test._id search: ' + res.code);
+					localStorage.setItem(App.Credentials.prefix_access_token + 'access_token',null);
+					App.Credentials.access_token = null;
 					// App.router.navigate("body_login", true);
 					Backbone.history.loadUrl('body_login')
 					return;
