@@ -209,7 +209,6 @@ App.Utils = {
 		return vars;
 	},
 
-
 	getOAuthParamsInUrl: function(){
 		
 		var oauthParams = {},

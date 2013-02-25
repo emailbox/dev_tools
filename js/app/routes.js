@@ -41,7 +41,7 @@ App.Router = Backbone.Router.extend({
 
 		// Unless user_token is already in querystring
 		
-		if(typeof App.Credentials.user_token != 'string' || App.Credentials.user_token.length < 1){
+		if(typeof App.Credentials.access_token != 'string' || App.Credentials.prefix_access_token.length < 1){
 			
 			// var qs = App.Utils.getUrlVars();
 			var oauthParams = App.Utils.getOAuthParamsInUrl();

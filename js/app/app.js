@@ -27,7 +27,7 @@ var App = {
 		// Backbone.history.start({silent: true}); // Launches "" router
 		Backbone.history.start();
 		// App.router.navigate('',true);
-
+		
 		var access_token = localStorage.getItem(App.Credentials.prefix_access_token + 'access_token');
 		var user = localStorage.getItem(App.Credentials.prefix_access_token + 'user');
 		App.Credentials.access_token = access_token;
