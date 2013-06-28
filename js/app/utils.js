@@ -773,7 +773,20 @@ var Api = {
 			};
 			// console.log('rl');
 			// console.log(room_login);
-			socket.emit('room', JSON.stringify(room_login)); // log into room
+			// socket.emit('room', JSON.stringify(room_login)); // log into room
+
+			socket.on('disconnect',function(){
+				// alert('disconnected');
+				console.warn('Disconnected from websocket');
+			});
+			socket.on('connect',function(){
+				console.info('Connected to websocket');
+				socket.emit('room', JSON.stringify(room_login)); // log into room
+			});
+			socket.on('error', function(){
+				console.warn('Error with websocket');
+			});
+
 			socket.on('event', function (new_event) {
 
 				// See if Event.name exists
