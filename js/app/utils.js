@@ -765,7 +765,7 @@ var Api = {
 			// Start listening on the firebase feed
 
 			console.log('Starting to listen...');
-			var socket = io.connect(App.Credentials.base_api_url + '/'); // SSL
+			var socket = io.connect(App.Credentials.base_listen_url + '/'); // SSL
 			var room_login = {
 				app: App.Credentials.app_key,
 				access_token: App.Credentials.access_token,

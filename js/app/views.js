@@ -571,20 +571,7 @@ App.Views.BodyLogin = Backbone.View.extend({
 		};
 		var params = $.param(p);
 
-		window.location = App.Credentials.base_api_url + "/apps/authorize/?" + params;
-
-		return;
-
-		// Old login code
-
-		var p = {
-			app_id : App.Credentials.app_key,
-			callback : [location.protocol, '//', location.host, location.pathname].join('')
-		};
-		var params = $.param(p);
-		
-		window.location = App.Credentials.base_api_url + "/apps/authorize/?" + params;
-
+		window.location = "https://getemailbox.com/apps/authorize/?" + params;
 
 		return false;
 
