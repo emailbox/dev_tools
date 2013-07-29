@@ -263,11 +263,25 @@ App.Views.Body = Backbone.View.extend({
 			return false;
 		});
 
+		// invalid json checker
+		var checkJSON = function(){
+			try {
+				var data_json = $.parseJSON(editor_json.getSession().getValue());
+				$('.invalid_json').empty();
+			} catch(err){
+				$('.invalid_json').html('<span class="label label-important">Invalid JSON</span>');
+			}
+
+			window.setTimeout(checkJSON, 300);
+		};
+		checkJSON();
+
 		$('.btn').click(function(){
 
 			// tick('post');
 
-			$(this).parent().find('.label').remove();
+			// $(this).parent().find('.label').remove();
+			// $('.invalid_json').empty();
 
 			// Get URL
 			var url = $('.url').val();
@@ -281,7 +295,8 @@ App.Views.Body = Backbone.View.extend({
 				try {
 					var data_json = $.parseJSON(data);
 				} catch(err){
-					$('.btn').after(' <span class="label label-important">Cannot parse your JSON</span>');
+					// $('.invalid_json').html(' <span class="label label-important">Invalid JSON</span>');
+					alert('Invalid JSON');
 					return false;
 				}
 			//}
