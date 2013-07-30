@@ -427,6 +427,17 @@ App.Views.Body = Backbone.View.extend({
 		$(window).resize(function() {
 			// resizeEditors();
 
+			var win_h = $(window).height();
+
+			var from_top = $('#editor_json').offset().top;
+
+			var new_h = win_h - from_top;
+
+			$('#editor_json').height(new_h + 'px')
+			$('#editor_result').height(new_h + 'px')
+
+			editor_json.resize();
+			editor_result.resize();
 
 		});
 		
