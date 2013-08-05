@@ -266,9 +266,9 @@
 
 			<span class="data_id" data-id="{{id}}" data-error="">
 				{{#if data.response_to}}
-					<span style="color:#999;">{{data.response_to}}</span> - {{id}} - {{event}}&nbsp;&nbsp;&nbsp;
+					<span style="color:#999;">{{cutoff 8 data.response_to}}</span> - {{cutoff 8 id}} - {{event}}&nbsp;&nbsp;&nbsp;
 				{{else}}
-					<strong>{{id}}</strong> - 
+					<strong>{{cutoff 8 id}}</strong> - 
 					{{event}}&nbsp;&nbsp;&nbsp;
 				{{/if}}
 				<span class="timeago" title="{{display_iso8601 created}}">

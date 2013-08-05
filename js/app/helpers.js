@@ -238,6 +238,11 @@ Handlebars.registerHelper('toSentence', function(context, block) {
 });
 
 
+Handlebars.registerHelper('cutoff', function(len, str, options) {
+  return str.substr(0, len);
+});
+
+
 /* Handlebars Helpers - Dan Harper (http://github.com/danharper) */
 
 /* This program is free software. It comes without any warranty, to
