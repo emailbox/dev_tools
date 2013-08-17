@@ -10,7 +10,57 @@ var App = {
 	Views:       {},
 	Utils:       {},
 	Plugins:     {},
-	Data: 		 {},
+	Data: 		 {
+		DefaultSearches: [
+			{
+				name: "Latest Email",
+				url: 'api/search',
+				json: {
+					model: "Email",
+					conditions: {},
+					fields: [],
+					limit: 1,
+					sort: {
+						_id : -1
+					}
+				}
+			},
+			{
+				name: "Latest Thread",
+				url: 'api/search',
+				json: {
+					model: "Thread",
+					conditions: {},
+					fields: [],
+					limit: 1,
+					sort: {
+						_id : -1
+					}
+				}
+			},
+			{
+				name: "Contacts",
+				url: 'api/search',
+				json: {
+					model: "Contact",
+					conditions: {},
+					fields: [],
+					limit: 5,
+					sort: {
+						_id : -1
+					}
+				}
+			},
+			{
+				name: "Email ping",
+				url: 'api/event',
+				json: {
+					event: "Email.ping",
+					obj: true
+				}
+			}
+		]
+	},
 	Credentials: tmp_credentials,
 
 	// Called once, at app startup

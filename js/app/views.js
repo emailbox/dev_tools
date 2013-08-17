@@ -24,7 +24,8 @@ App.Views.Body = Backbone.View.extend({
 	events: {
 		'click #switch_view' : 'switch_view',
 		'click span.data_id' : 'show_log',
-		'keyup input#limit' : 'limit'
+		'keyup input#limit' : 'limit',
+		'click .fill-defaults' : 'fill_defaults'
 	},
 
 	db: {}, // database of events
@@ -86,6 +87,48 @@ App.Views.Body = Backbone.View.extend({
 
 	},
 
+	fill_defaults: function(ev){
+		// Read in the defaults and fill up the JSON tables with each default
+		var that = this,
+			elem = ev.currentTarget;
+
+
+		// Get current position_index
+		var position_index = localStorage.getItem('position_index');
+		if(position_index == null || position_index < 1){
+			position_index = 1;
+		}
+
+		_.each(App.Data.DefaultSearches, function(obj, idx){
+			var id = $('#switcher a').eq(idx).attr('data-id');
+			var json_item = js_beautify(JSON.stringify(obj.json));
+
+			// Set localstorage values
+			localStorage.setItem('saved_post_name_'+id, obj.name);
+			localStorage.setItem('saved_post_json_' + id, json_item);
+			localStorage.setItem('saved_url_' + id, obj.url);
+
+			// Update on-page text
+			$('#switcher a').eq(idx).text(obj.name);
+
+			// Update currently displayed JSON editor also
+			if(position_index == id){
+				// Update existing values in JSON editor
+				console.info(position_index);
+				that.editor_json.getSession().setValue(json_item);
+			}
+
+
+		});
+
+		// Reload the currently-selected one (with new data)
+		// - todo
+
+			
+		return false;
+
+	},
+
 
 	render: function() {
 
@@ -101,7 +144,7 @@ App.Views.Body = Backbone.View.extend({
 
 		// Build Editors
 		var editor_js;
-		var editor_json;
+		that.editor_json = null;
 		var editor_result;
 		var ticks = {};
 		var cticks = {};
@@ -134,11 +177,11 @@ App.Views.Body = Backbone.View.extend({
 
 
 		// JSON
-		editor_json = ace.edit("editor_json");
+		that.editor_json = ace.edit("editor_json");
 		var JsonMode = require("ace/mode/json").Mode;
-		editor_json.getSession().setMode(new JsonMode());
+		that.editor_json.getSession().setMode(new JsonMode());
 		//editor_json.getSession().setFoldStyle('markbegin'); // can't get folding to work
-		editor_json.setBehavioursEnabled(false); // turn off auto-complete brackets (annoying)
+		that.editor_json.setBehavioursEnabled(false); // turn off auto-complete brackets (annoying)
 		
 		// Result JSON
 		editor_result = ace.edit("editor_result");
@@ -182,12 +225,12 @@ App.Views.Body = Backbone.View.extend({
 			var saved_post_json = localStorage.getItem('saved_post_json_' + id);
 			if(saved_post_json != null && saved_post_json != false){
 				
-				editor_json.getSession().setValue(saved_post_json);
+				that.editor_json.getSession().setValue(saved_post_json);
 				
 			} else {
 				// No data saved for this one, yet
 				// - clear out the entry form
-				editor_json.getSession().setValue("");
+				that.editor_json.getSession().setValue("");
 			}
 
 			// Results Editor
@@ -249,7 +292,7 @@ App.Views.Body = Backbone.View.extend({
 		//editor_json.getSession().getValue();
 
 		$('.beautify').click(function(){
-			editor_json.getSession().setValue(js_beautify(editor_json.getSession().getValue()));
+			that.editor_json.getSession().setValue(js_beautify(editor_json.getSession().getValue()));
 			return false;
 		});
 
@@ -266,7 +309,7 @@ App.Views.Body = Backbone.View.extend({
 		// invalid json checker
 		var checkJSON = function(){
 			try {
-				var data_json = $.parseJSON(editor_json.getSession().getValue());
+				var data_json = $.parseJSON(that.editor_json.getSession().getValue());
 				$('.invalid_json').empty();
 			} catch(err){
 				$('.invalid_json').html('<span class="label label-important">Invalid JSON</span>');
@@ -276,7 +319,7 @@ App.Views.Body = Backbone.View.extend({
 		};
 		checkJSON();
 
-		$('.btn').click(function(){
+		$('.btn-submit').click(function(){
 
 			// tick('post');
 
@@ -287,7 +330,7 @@ App.Views.Body = Backbone.View.extend({
 			var url = $('.url').val();
 
 			// Get actual value
-			var data = editor_json.getSession().getValue();
+			var data = that.editor_json.getSession().getValue();
 
 			// Validate that this is JSON
 			
@@ -436,7 +479,7 @@ App.Views.Body = Backbone.View.extend({
 			$('#editor_json').height(new_h + 'px')
 			$('#editor_result').height(new_h + 'px')
 
-			editor_json.resize();
+			that.editor_json.resize();
 			editor_result.resize();
 
 		});
@@ -462,8 +505,7 @@ App.Views.Body = Backbone.View.extend({
 			}
 
 			// Current value
-			var current_value = editor_json.getSession().getValue();
-
+			var current_value = that.editor_json.getSession().getValue();
 
 			// Match?
 			if(current_value != saved_post_json){
@@ -485,7 +527,7 @@ App.Views.Body = Backbone.View.extend({
 		$('#editor_json').height(new_h + 'px')
 		$('#editor_result').height(new_h + 'px')
 
-		editor_json.resize();
+		that.editor_json.resize();
 		editor_result.resize();
 
 		// Set listener for new events
