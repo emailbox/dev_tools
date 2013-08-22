@@ -292,7 +292,7 @@ App.Views.Body = Backbone.View.extend({
 		//editor_json.getSession().getValue();
 
 		$('.beautify').click(function(){
-			that.editor_json.getSession().setValue(js_beautify(editor_json.getSession().getValue()));
+			that.editor_json.getSession().setValue(js_beautify(that.editor_json.getSession().getValue()));
 			return false;
 		});
 
