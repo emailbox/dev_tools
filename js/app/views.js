@@ -28,7 +28,7 @@ App.Views.Body = Backbone.View.extend({
 		'click .fill-defaults' : 'fill_defaults'
 	},
 
-	db: {}, // database of events
+	db: [], // database of events
 
 	initialize: function() {
 		_.bindAll(this, 'render');
@@ -282,7 +282,7 @@ App.Views.Body = Backbone.View.extend({
 
 			return false;
 
-		});
+		}); 
 
 
 		// Click the right button and it does the rest
@@ -543,7 +543,10 @@ App.Views.Body = Backbone.View.extend({
 
 			var j = JSON.stringify(d);
 
-			that.db[d.id] = j;
+			that.db.push({
+				id: d.id,
+				data: j
+			});
 
 			// Add to list
 			var template = App.Utils.template('t_item');
@@ -583,8 +586,11 @@ App.Views.Body = Backbone.View.extend({
 
 		var template = App.Utils.template('t_item');
 
+		// Limit the size of that.db
+		that.db = that.db.splice(-1 * App.Credentials.max_event_display)
+
 		$.each(that.db,function(i,d){
-			var ev = JSON.parse(d);
+			var ev = JSON.parse(d.data);
 			if(filter){
 				// See if filter is in any of the fields we test against
 				var fields = ['event','id'];
@@ -604,9 +610,6 @@ App.Views.Body = Backbone.View.extend({
 			}
 			$('#list').prepend(template(ev));
 		});
-
-		// console.log('d');
-		// console.log(d);
 
 		$('.timeago').timeago();
 
