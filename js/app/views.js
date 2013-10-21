@@ -59,29 +59,32 @@ App.Views.Body = Backbone.View.extend({
 		// Show event log result
 
 		var elem = ev.currentTarget;
+		
+		for(i in this.db){	
+			if(this.db[i].id != $(elem).attr('data-id')){
+				continue;
+			}
+			var stringd = this.db[i].data;
+			var json = JSON.parse(stringd);
+			var meta = JSON.parse(stringd);
 
-		var stringd = this.db[$(elem).attr('data-id')];
-		//var stringd = localStorage.getItem('test1_'+$(this).attr('data-id'));
+			// delete meta.data; // display content below the meta info
 
-		var json = JSON.parse(stringd);
-		var meta = JSON.parse(stringd);
+			// highlight correct row
+			$('span.data_id').removeClass('chosen');
+			$(elem).addClass('chosen');
 
-		// delete meta.data; // display content below the meta info
+			// Add to page
+			// console.log(json);
+			$('#latest pre#meta').html(JSON.stringify(meta, undefined, 4));
+			// $('#latest pre#data').html(JSON.stringify(json.data, undefined, 4));
 
-		// highlight correct row
-		$('span.data_id').removeClass('chosen');
-		$(elem).addClass('chosen');
-
-		// Add to page
-		// console.log(json);
-		$('#latest pre#meta').html(JSON.stringify(meta, undefined, 4));
-		// $('#latest pre#data').html(JSON.stringify(json.data, undefined, 4));
-
-		/*
-		if(typeof(json) != 'undefined'){
-			$('#latest pre').html(json);
+			/*
+			if(typeof(json) != 'undefined'){
+				$('#latest pre').html(json);
+			}
+			*/
 		}
-		*/
 
 		return false;
 
